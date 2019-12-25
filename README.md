@@ -1,5 +1,7 @@
 # VueJS Queue
 
+http://destinct.github.io/dist/index.html
+
 ## Project setup
 ```
 yarn install
@@ -13,16 +15,6 @@ yarn serve
 ### Compiles and minifies for production
 ```
 yarn build
-```
-
-### Run your unit tests
-```
-yarn test:unit
-```
-
-### Run your end-to-end tests
-```
-yarn test:e2e
 ```
 
 ### Lints and fixes files
