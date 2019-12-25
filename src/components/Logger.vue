@@ -22,16 +22,7 @@
       ></v-textarea>
     </v-row>
     <v-row justify="end">
-      <v-btn
-        large
-        color="secondary"
-        @click="
-          logs = [];
-          queue = [];
-          isProcessing = false;
-        "
-        >RESET</v-btn
-      >
+      <v-btn large color="secondary" @click="reset">RESET</v-btn>
     </v-row>
   </v-container>
 </template>
@@ -43,6 +34,7 @@ export default {
   data: () => ({
     logs: [],
     queue: [],
+    timeoutList: [],
     isProcessing: false
   }),
 
@@ -94,9 +86,11 @@ export default {
      */
     getPromise(clickDate, timeout, btnNumber) {
       return new Promise(resolve => {
-        setTimeout(() => {
+        let tIndex = setTimeout(() => {
           resolve(this.printString(clickDate, new Date(), btnNumber, timeout));
         }, timeout * 1000);
+
+        this.timeoutList.push(tIndex);
       });
     },
 
@@ -135,6 +129,21 @@ export default {
       if (!this.isProcessing) {
         this.processQueue();
       }
+    },
+
+    /**
+     * Сбрасывает состояние очереди
+     *
+     */
+    reset() {
+      this.timeoutList.forEach(tIndex => {
+        clearInterval(tIndex);
+      });
+
+      this.logs = [];
+      this.queue = [];
+      this.timeoutList = [];
+      this.isProcessing = false;
     }
   }
 };
