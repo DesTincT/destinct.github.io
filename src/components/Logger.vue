@@ -1,14 +1,15 @@
 <template>
   <v-container>
     <v-row class="mb-4">
-      <v-btn class="mr-4" large color="primary" outlined @click="onClick(1)"
-        >Button 1</v-btn
-      >
-      <v-btn class="mr-4" large color="primary" outlined @click="onClick(2)"
-        >Button 2</v-btn
-      >
-      <v-btn class="mr-4" large color="primary" outlined @click="onClick(3)"
-        >Button 3</v-btn
+      <v-btn
+        v-for="(btn, index) in buttons"
+        :key="index"
+        class="mr-4"
+        large
+        color="primary"
+        outlined
+        @click="onClick(index + 1)"
+        >{{ btn.text }}</v-btn
       >
     </v-row>
     <v-row>
@@ -35,7 +36,18 @@ export default {
     logs: [],
     queue: [],
     timeoutList: [],
-    isProcessing: false
+    isProcessing: false,
+    buttons: [
+      {
+        text: "Button 1"
+      },
+      {
+        text: "Button 2"
+      },
+      {
+        text: "Button 3"
+      }
+    ]
   }),
 
   computed: {
