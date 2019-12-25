@@ -18,11 +18,20 @@
         readonly
         auto-grow
         :value="formattedLogs"
-        :loading="isLoading"
+        :loading="isProcessing"
       ></v-textarea>
     </v-row>
     <v-row justify="end">
-      <v-btn large color="secondary" @click="logs = []">RESET</v-btn>
+      <v-btn
+        large
+        color="secondary"
+        @click="
+          logs = [];
+          queue = [];
+          isProcessing = false;
+        "
+        >RESET</v-btn
+      >
     </v-row>
   </v-container>
 </template>
@@ -33,9 +42,8 @@ export default {
 
   data: () => ({
     logs: [],
-    isLoading: false,
-    timeouts: [],
-    promises: []
+    queue: [],
+    isProcessing: false
   }),
 
   computed: {
@@ -78,36 +86,56 @@ export default {
     },
 
     /**
+     * Возвращает промис с таймаутом
+     * @param  {Object} clickDate [description]
+     * @param  {Number} timeout   [description]
+     * @param  {Number} btnNumber [description]
+     * @return {Promise}           [description]
+     */
+    getPromise(clickDate, timeout, btnNumber) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve(this.printString(clickDate, new Date(), btnNumber, timeout));
+        }, timeout * 1000);
+      });
+    },
+
+    /**
+     * Обработчик очереди промисов с таймаутами
+     * @return {[type]} [description]
+     */
+    processQueue() {
+      if (!this.queue.length) {
+        return;
+      }
+
+      this.isProcessing = true;
+
+      this.getPromise(...this.queue.shift()).then(result => {
+        this.logs.push(result);
+
+        if (this.queue.length) {
+          this.processQueue();
+        } else {
+          this.isProcessing = false;
+        }
+      });
+    },
+
+    /**
      * Обработчик клика по кнопке
      * @param  {Number} btnNumber номер кнопки
      */
     onClick(btnNumber) {
       let timeout = Math.floor(Math.random() * 10) + 1;
       let clickDate = new Date();
-      this.isLoading = true;
 
-      setTimeout(() => {
-        let logDate = new Date();
-        let log = this.printString(clickDate, logDate, btnNumber, timeout);
+      this.queue.push([clickDate, timeout, btnNumber]);
 
-        this.logs.push(log);
-
-        /**
-         * Убираем прогрессбар при последнем выводе строки
-         * @param  {[type]} this.timeouts.length [description]
-         * @return {[type]}                      [description]
-         */
-        if (this.timeouts.length === 1) {
-          this.isLoading = false;
-        }
-
-        this.timeouts.splice(this.timeouts.indexOf(timeoutIndex), 1);
-      });
-
-      let timeoutIndex = this.timeouts.push(timeoutIndex);
-    },
-
-    onClickDifficult() {}
+      if (!this.isProcessing) {
+        this.processQueue();
+      }
+    }
   }
 };
 </script>
