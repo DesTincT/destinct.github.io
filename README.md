@@ -1,4 +1,4 @@
-# tipz
+# VueJS Queue
 
 ## Project setup
 ```
