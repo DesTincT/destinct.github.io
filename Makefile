@@ -6,6 +6,6 @@ deploy:
 	git add -A
 	git commit -m 'deploy'
 
-	git push -f git@github.com:DesTincT/VueJS-Queue.git master:gh-pages
+	git push -f git@github.com:DesTincT/DesTincT.github.io.git master
 
 	cd -
